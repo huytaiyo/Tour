@@ -10,7 +10,7 @@ class Location(models.Model):
 
 class Hotel(models.Model):
     name= models.CharField(max_length=200)
-    Location =  models.ForeignKey(Location, on_delete=models.CASCADE, related_name='hotels')
+    location =  models.ForeignKey(Location, on_delete=models.CASCADE, related_name='hotels')
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     rating = models.FloatField(default=0)

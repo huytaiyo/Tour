@@ -15,25 +15,25 @@ class HotelImageInline(admin.TabularInline):
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ('name','description')
     search_fields = ('name',)
 
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display  = ('name','location', ' price ', ' rating ')
-    list_filter = {'location',}
-    search_fields = ('flight_number', 'origin_name' , 'destination_name')
+    list_display  = ('name','location','price','rating')
+    list_filter = ('location',)
+    search_fields = ('name', 'location__name')
     inlines = [HotelImageInline]
 @admin.register(FlightTicket)
 class FlightTicketAdmin(admin.ModelAdmin):
-    list_display  = ('flight_number','origin', ' destination ', ' departure_time ', 'arrival_time', 'price' , 'rating')
-    list_filter = {'origin','destination'}
-    search_fields = ('flight_number', 'origin_name' , 'destination_name')
+    list_display  = ('flight_number','origin','destination','departure_time','arrival_time','price','rating')
+    list_filter = ('origin','destination')
+    search_fields = ('flight_number','origin__name','destination__name')
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display  = ('user','Booking_type', ' flight ', ' booking_date ', 'status')
-    list_filter = {'booking_type','status'}
-    search_fields = ('user__username')
+    list_display  = ('user','booking_type','flight','booking_date','status')
+    list_filter = ('booking_type','status')
+    search_fields = ('user__username',)
 
 
 
