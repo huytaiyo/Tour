@@ -8,6 +8,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     </head>
+    <style>
+        
+    </style>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
@@ -22,10 +25,35 @@
                         {% endif %}
                     </ul>
                 </div>
-                
-                
             </div>
         </nav>
+    <div class="bg-info text-white p-3 d-flex justify-content-center">
+        <header >
+            <h1>Traveloka for Corporates</h1>
+            <h5>Arranging corporate travel is now easier, more reliable, and secure.</h5>
+            <h5>Traveloka is here to provide you with the best travel services.</h5>
+        </header>
+    </div>
+<div class="container mt-3">
+    <div class="row mb-4">
+        <div class="col">
+            <form method="get" action="{% url 'home:search' %}" >
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="tim kiem khach san hoac ve may bay">
+                    <select name="type" class="form-select" style="max-width: 150px;" aria-label="chon loai tim kiem">
+                        <option value="hotel">hotel</option>
+                        <option value="flight">flight ticket</option>
+                    </select>
+                    <button class="btn btn-primary" type="submit">search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</div>
+
+    </header>
         
         <script src="" async defer></script>
     </body>

@@ -16,7 +16,7 @@
                     <div class="alert alert-{{ message.tags }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
-            <from method="post">
+            <form method="post">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>

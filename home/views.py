@@ -23,9 +23,9 @@ def user_logout(request):
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.Post.get['password']
-        user = authenticate(username=username, password=password)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request,username=username,password=password)
         if user is not None:
             login(request, user)
             return redirect('home:home')
@@ -47,3 +47,22 @@ def user_register(request):
             messages.success(request, "User registered successfully")
             return redirect('home:login')
     return render(request, 'home/register.html')
+
+def search(request):
+    query = request.GET.get('q', '')
+    item_type = request.GET.get('type', 'hotel')
+    results = []
+    if item_type == 'hotel':
+        results = Hotel.objects.filter(
+            Q(name__icontains=query) | Q(location__name__icontains=query)
+        )
+    elif item_type =='flight':
+        results = FlightTicket.objects.filter(
+            Q(flight_number__icontains=query) | Q(origin__name__icontains=query) | Q(destination__name__icontains=query)
+        )
+    context = {
+        'results' : results,
+        'query' : query,
+        'item_type' : item_type,
+    }
+    return render(request, 'home/search.html', context)
