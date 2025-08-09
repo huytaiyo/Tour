@@ -28,7 +28,7 @@ class Hotel(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     rating = models.FloatField(default=0)
-    star_rating = models.IntegerField(choices=STAR_CHOICES, default=3)
+    stars = models.IntegerField(choices=STAR_CHOICES, default=3)
     address = models.CharField(max_length=255, blank=True)
     amenities = models.TextField(blank=True, help_text="Comma-separated list of amenities")
     is_featured = models.BooleanField(default=False)
