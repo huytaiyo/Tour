@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đặt chỗ - Travel Website</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home:home' %}">Travel Website</a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  {% if item %}
+    <h2>Đặt chỗ cho {{ item.name if item_type == 'hotel' else item.flight_number }}</h2>
+    <form method="post">
+      {% csrf_token %}
+      <p>Bạn có chắc chắn muốn đặt chỗ này?</p>
+      <button type="submit" class="btn btn-success">Xác nhận đặt chỗ</button>
+      <a href="{% url 'home:detail' item_type=item_type item_id=item.id %}" class="btn btn-secondary">Hủy</a>
+    </form>
+  {% else %}
+    <p>Không tìm thấy thông tin để đặt chỗ.</p>
+  {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

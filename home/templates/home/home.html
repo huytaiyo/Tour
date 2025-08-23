@@ -1,60 +1,900 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Travel Website - Home</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Traveloka - Đặt vé máy bay, khách sạn, tour & xe</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        
+        :root {
+            --primary-color: #0064D2;
+            --secondary-color: #FF5722;
+            --accent-color: #00B0F0;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Sticky navbar */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-sticky {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        /* Hero section with dynamic background */
+        .hero {
+            background: linear-gradient(rgba(0, 100, 210, 0.8), rgba(0, 176, 240, 0.8)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0 50px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdn.dribbble.com/users/1314493/screenshots/3849071/media/9e1c3c2a3a9c9632b1d9b4d9784f3abe.gif');
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Search tabs */
+        .search-tabs {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-tabs {
+            border: none;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+            padding: 15px 20px;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background-color: transparent;
+        }
+
+        .tab-content {
+            padding: 20px;
+        }
+
+        /* Category cards */
+        .category-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+            background: white;
+            height: 100%;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* Item cards */
+        .item-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            background: white;
+            height: 100%;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .item-card .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .item-card .card-body {
+            padding: 15px;
+        }
+
+        .item-card .card-title {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .item-card .card-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .item-card .price {
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .item-card .rating {
+            color: #FFD700;
+        }
+
+        /* Promotions section */
+        .promotion-card {
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .promotion-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .promotion-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .promotion-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 15px;
+        }
+
+        .countdown {
+            background: var(--secondary-color);
+            color: white;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 5px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Section titles */
+        .section-title {
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-gray);
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 50px;
+        }
+
+        footer h5 {
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        footer ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        footer ul li {
+            margin-bottom: 10px;
+        }
+
+        footer ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer ul li a:hover {
+            color: white;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 0 100px;
+            }
+
+            .search-tabs {
+                margin-top: -30px;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
     </style>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <a class="navbar-brand" href="{% url 'home:home' %}">Travel Website</a>
-                <div class = "collapse navbar-collapse">
-                    <ul class="navbar-nav ms-auto">
-                        {%if user.is_authenticated%}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'home:logout' %}">Logout</a></li>
-                        {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'home:login' %}">Login</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'home:register' %}">Register</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'home:home' %}">
+        <i class="fas fa-plane-departure me-2"></i>Traveloka
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:flight_search' %}">
+              <i class="fas fa-plane me-1"></i> Vé máy bay
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:hotel_search' %}">
+              <i class="fas fa-hotel me-1"></i> Khách sạn
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:tour_search' %}">
+              <i class="fas fa-map-marked-alt me-1"></i> Tour
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:car_search' %}">
+              <i class="fas fa-car me-1"></i> Xe đưa đón
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:promotions' %}">
+              <i class="fas fa-tag me-1"></i> Khuyến mãi
+            </a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-circle me-1"></i> {{ user.username }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="{% url 'home:profile' %}"><i class="fas fa-id-card me-2"></i>Hồ sơ</a></li>
+                <li><a class="dropdown-item" href="{% url 'home:orders' %}"><i class="fas fa-list-alt me-2"></i>Đơn hàng</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'home:logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+              </ul>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home:login' %}">
+                <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home:register' %}">
+                <i class="fas fa-user-plus me-1"></i> Đăng ký
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-content text-center">
+      <h1 class="display-4 fw-bold mb-4">Khám phá thế giới cùng Traveloka</h1>
+      <p class="lead mb-5">Đặt vé máy bay, khách sạn, tour và xe đưa đón với giá tốt nhất</p>
+    </div>
+  </section>
+
+  <!-- Search Tabs -->
+  <div class="container">
+    <div class="search-tabs">
+      <ul class="nav nav-tabs" id="searchTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="flights-tab" data-bs-toggle="tab" data-bs-target="#flights" type="button" role="tab" aria-controls="flights" aria-selected="true">
+            <i class="fas fa-plane me-2"></i>Vé máy bay
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="hotels-tab" data-bs-toggle="tab" data-bs-target="#hotels" type="button" role="tab" aria-controls="hotels" aria-selected="false">
+            <i class="fas fa-hotel me-2"></i>Khách sạn
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tours-tab" data-bs-toggle="tab" data-bs-target="#tours" type="button" role="tab" aria-controls="tours" aria-selected="false">
+            <i class="fas fa-map-marked-alt me-2"></i>Tour
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="cars-tab" data-bs-toggle="tab" data-bs-target="#cars" type="button" role="tab" aria-controls="cars" aria-selected="false">
+            <i class="fas fa-car me-2"></i>Xe đưa đón
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="searchTabsContent">
+        <!-- Flights Tab -->
+        <div class="tab-pane fade show active" id="flights" role="tabpanel" aria-labelledby="flights-tab">
+          <form action="{% url 'home:flight_search' %}" method="get">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="origin" class="form-label">Điểm đi</label>
+                <select class="form-select" id="origin" name="origin" required>
+                  <option value="">Chọn điểm đi</option>
+                  {% for location in popular_locations %}
+                    <option value="{{ location.id }}">{{ location.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="destination" class="form-label">Điểm đến</label>
+                <select class="form-select" id="destination" name="destination" required>
+                  <option value="">Chọn điểm đến</option>
+                  {% for location in popular_locations %}
+                    <option value="{{ location.id }}">{{ location.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="departure_date" class="form-label">Ngày đi</label>
+                <input type="date" class="form-control" id="departure_date" name="departure_date" required min="{{ today }}">
+              </div>
+              <div class="col-md-3">
+                <label for="return_date" class="form-label">Ngày về</label>
+                <input type="date" class="form-control" id="return_date" name="return_date" min="{{ today }}">
+              </div>
+              <div class="col-md-3">
+                <label for="passengers" class="form-label">Hành khách</label>
+                <select class="form-select" id="passengers" name="passengers">
+                  {% for i in "12345"|make_list %}
+                    <option value="{{ i }}">{{ i }} hành khách</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="seat_class" class="form-label">Hạng ghế</label>
+                <select class="form-select" id="seat_class" name="seat_class">
+                  <option value="economy">Phổ thông</option>
+                  <option value="premium_economy">Phổ thông đặc biệt</option>
+                  <option value="business">Thương gia</option>
+                  <option value="first">Hạng nhất</option>
+                </select>
+              </div>
+              <div class="col-12 text-center mt-4">
+                <button type="submit" class="btn btn-primary px-5 py-2">
+                  <i class="fas fa-search me-2"></i>Tìm chuyến bay
+                </button>
+              </div>
             </div>
-        </nav>
-    <div class="bg-info text-white p-3 d-flex justify-content-center">
-        <header >
-            <h1>Traveloka for Corporates</h1>
-            <h5>Arranging corporate travel is now easier, more reliable, and secure.</h5>
-            <h5>Traveloka is here to provide you with the best travel services.</h5>
-        </header>
-    </div>
-<div class="container mt-3">
-    <div class="row mb-4">
-        <div class="col">
-            <form method="get" action="{% url 'home:search' %}" >
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="tim kiem khach san hoac ve may bay">
-                    <select name="type" class="form-select" style="max-width: 150px;" aria-label="chon loai tim kiem">
-                        <option value="hotel">hotel</option>
-                        <option value="flight">flight ticket</option>
-                    </select>
-                    <button class="btn btn-primary" type="submit">search</button>
-                </div>
-            </form>
+          </form>
         </div>
+
+        <!-- Hotels Tab -->
+        <div class="tab-pane fade" id="hotels" role="tabpanel" aria-labelledby="hotels-tab">
+          <form action="{% url 'home:hotel_search' %}" method="get">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="location" class="form-label">Thành phố, địa điểm</label>
+                <select class="form-select" id="location" name="location" required>
+                  <option value="">Chọn thành phố</option>
+                  {% for location in popular_locations %}
+                    <option value="{{ location.id }}">{{ location.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="check_in" class="form-label">Nhận phòng</label>
+                <input type="date" class="form-control" id="check_in" name="check_in" required min="{{ today }}">
+              </div>
+              <div class="col-md-3">
+                <label for="check_out" class="form-label">Trả phòng</label>
+                <input type="date" class="form-control" id="check_out" name="check_out" required min="{{ tomorrow }}">
+              </div>
+              <div class="col-md-6">
+                <label for="guests" class="form-label">Số khách</label>
+                <select class="form-select" id="guests" name="guests">
+                  {% for i in "123456"|make_list %}
+                    <option value="{{ i }}">{{ i }} khách</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Xếp hạng</label>
+                <div>
+                  {% for i in "12345"|make_list %}
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" name="stars" id="star{{ i }}" value="{{ i }}">
+                      <label class="form-check-label" for="star{{ i }}">
+                        {% for _ in "12345"|make_list|slice:":i" %}
+                          <i class="fas fa-star text-warning"></i>
+                        {% endfor %}
+                      </label>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="col-12 text-center mt-4">
+                <button type="submit" class="btn btn-primary px-5 py-2">
+                  <i class="fas fa-search me-2"></i>Tìm khách sạn
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tours Tab -->
+        <div class="tab-pane fade" id="tours" role="tabpanel" aria-labelledby="tours-tab">
+          <form action="{% url 'home:tour_search' %}" method="get">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="tour_location" class="form-label">Điểm đến</label>
+                <select class="form-select" id="tour_location" name="location" required>
+                  <option value="">Chọn điểm đến</option>
+                  {% for location in popular_locations %}
+                    <option value="{{ location.id }}">{{ location.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="tour_guests" class="form-label">Số khách</label>
+                <select class="form-select" id="tour_guests" name="guests">
+                  {% for i in "123456"|make_list %}
+                    <option value="{{ i }}">{{ i }} khách</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-12 text-center mt-4">
+                <button type="submit" class="btn btn-primary px-5 py-2">
+                  <i class="fas fa-search me-2"></i>Tìm tour
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Cars Tab -->
+        <div class="tab-pane fade" id="cars" role="tabpanel" aria-labelledby="cars-tab">
+          <form action="{% url 'home:car_search' %}" method="get">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="car_location" class="form-label">Địa điểm</label>
+                <select class="form-select" id="car_location" name="location" required>
+                  <option value="">Chọn địa điểm</option>
+                  {% for location in popular_locations %}
+                    <option value="{{ location.id }}">{{ location.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="car_type" class="form-label">Loại xe</label>
+                <select class="form-select" id="car_type" name="car_type">
+                  <option value="">Tất cả loại xe</option>
+                  <option value="sedan">Sedan</option>
+                  <option value="suv">SUV</option>
+                  <option value="van">Van</option>
+                  <option value="luxury">Xe sang</option>
+                </select>
+              </div>
+              <div class="col-12 text-center mt-4">
+                <button type="submit" class="btn btn-primary px-5 py-2">
+                  <i class="fas fa-search me-2"></i>Tìm xe
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
+    <!-- Categories Section -->
+    <h2 class="section-title">Dịch vụ của chúng tôi</h2>
+    <div class="row">
+      {% for category in categories %}
+      <div class="col-6 col-md-3">
+        <a href="{% url category.url %}" class="text-decoration-none">
+          <div class="category-card text-center p-4">
+            <div class="category-icon">
+              <i class="{{ category.icon }}"></i>
+            </div>
+            <h5>{{ category.name }}</h5>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
     </div>
 
-</div>
-</div>
+    <!-- Promotions Section -->
+    <h2 class="section-title mt-5">Khuyến mãi hot</h2>
+    <div class="row">
+      {% for promotion in active_promotions %}
+      <div class="col-md-6 col-lg-3">
+        <div class="promotion-card">
+          <img src="{{ promotion.image.url }}" alt="{{ promotion.title }}" class="img-fluid">
+          <div class="promotion-overlay">
+            <h5>{{ promotion.title }}</h5>
+            <p class="mb-0">{{ promotion.description|truncatechars:50 }}</p>
+          </div>
+          <div class="countdown" data-end="{{ promotion.end_date|date:'Y-m-d' }}">
+            <i class="far fa-clock me-1"></i><span class="days-left">{{ promotion.get_remaining_days }}</span> ngày
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
 
-    </header>
-        
-        <script src="" async defer></script>
-    </body>
+    <!-- Featured Hotels Section -->
+    <h2 class="section-title mt-5">Khách sạn nổi bật</h2>
+    <div class="row">
+      {% for hotel in featured_hotels %}
+      <div class="col-md-6 col-lg-4">
+        <div class="item-card">
+          {% if hotel.images.all %}
+          <div id="hotelCarousel{{ hotel.id }}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% for image in hotel.images.all %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img src="{{ image.image.url }}" class="card-img-top" alt="{{ hotel.name }}">
+              </div>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#hotelCarousel{{ hotel.id }}" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#hotelCarousel{{ hotel.id }}" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+          {% else %}
+          <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top" alt="{{ hotel.name }}">
+          {% endif %}
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title mb-0">{{ hotel.name }}</h5>
+              <div class="rating">
+                {% for _ in "12345"|make_list|slice:":hotel.stars" %}
+                  <i class="fas fa-star"></i>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="card-text small mb-1">
+              <i class="fas fa-map-marker-alt me-1 text-secondary"></i>{{ hotel.location.name }}
+            </p>
+            <p class="card-text">{{ hotel.description|truncatewords:10 }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="price">{{ hotel.price|floatformat:0 }} VND</div>
+              <a href="{% url 'home:detail' 'hotel' hotel.id %}" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Featured Flights Section -->
+    <h2 class="section-title mt-5">Chuyến bay nổi bật</h2>
+    <div class="row">
+      {% for flight in featured_flights %}
+      <div class="col-md-6 col-lg-4">
+        <div class="item-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h5 class="card-title mb-0">{{ flight.flight_number }}</h5>
+                <p class="text-muted mb-0">{{ flight.airline }}</p>
+              </div>
+              {% if flight.airline_logo %}
+                <img src="{{ flight.airline_logo.url }}" alt="{{ flight.airline }}" height="30">
+              {% endif %}
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+              <div class="text-center">
+                <h6 class="mb-0">{{ flight.departure_time|date:"H:i" }}</h6>
+                <p class="small text-muted mb-0">{{ flight.origin.name }}</p>
+              </div>
+              <div class="text-center flex-grow-1 px-3">
+                <div class="small text-muted">{{ flight.get_duration }}</div>
+                <div class="flight-path position-relative">
+                  <hr class="m-0">
+                  <i class="fas fa-plane position-absolute top-50 start-50 translate-middle"></i>
+                </div>
+                <div class="small text-muted">{{ flight.seat_class|title }}</div>
+              </div>
+              <div class="text-center">
+                <h6 class="mb-0">{{ flight.arrival_time|date:"H:i" }}</h6>
+                <p class="small text-muted mb-0">{{ flight.destination.name }}</p>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="price">{{ flight.price|floatformat:0 }} VND</div>
+              <a href="{% url 'home:detail' 'flight' flight.id %}" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Featured Tours Section -->
+    <h2 class="section-title mt-5">Tour du lịch nổi bật</h2>
+    <div class="row">
+      {% for tour in featured_tours %}
+      <div class="col-md-6 col-lg-4">
+        <div class="item-card">
+          {% if tour.images.all %}
+          <div id="tourCarousel{{ tour.id }}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% for image in tour.images.all %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img src="{{ image.image.url }}" class="card-img-top" alt="{{ tour.name }}">
+              </div>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#tourCarousel{{ tour.id }}" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#tourCarousel{{ tour.id }}" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+          {% else %}
+          <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top" alt="{{ tour.name }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ tour.name }}</h5>
+            <p class="card-text small mb-1">
+              <i class="fas fa-map-marker-alt me-1 text-secondary"></i>{{ tour.location.name }}
+            </p>
+            <p class="card-text small mb-1">
+              <i class="fas fa-clock me-1 text-secondary"></i>{{ tour.duration }}
+            </p>
+            <p class="card-text">{{ tour.description|truncatewords:10 }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="price">{{ tour.price|floatformat:0 }} VND</div>
+              <a href="{% url 'home:detail' 'tour' tour.id %}" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Featured Cars Section -->
+    <h2 class="section-title mt-5">Xe đưa đón nổi bật</h2>
+    <div class="row">
+      {% for car in featured_cars %}
+      <div class="col-md-6 col-lg-4">
+        <div class="item-card">
+          {% if car.image %}
+          <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.name }}">
+          {% else %}
+          <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top" alt="{{ car.name }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ car.name }}</h5>
+            <p class="card-text small mb-1">
+              <i class="fas fa-map-marker-alt me-1 text-secondary"></i>{{ car.location.name }}
+            </p>
+            <p class="card-text small mb-1">
+              <i class="fas fa-car me-1 text-secondary"></i>{{ car.get_car_type_display }}
+            </p>
+            <p class="card-text small mb-1">
+              <i class="fas fa-users me-1 text-secondary"></i>{{ car.capacity }} người
+            </p>
+            <p class="card-text">{{ car.description|truncatewords:10 }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="price">{{ car.price|floatformat:0 }} VND</div>
+              <a href="{% url 'home:detail' 'car' car.id %}" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Popular Destinations Section -->
+    <h2 class="section-title mt-5">Điểm đến phổ biến</h2>
+    <div class="row">
+      {% for location in popular_locations %}
+      <div class="col-md-6 col-lg-3">
+        <div class="item-card">
+          {% if location.image %}
+          <img src="{{ location.image.url }}" class="card-img-top" alt="{{ location.name }}">
+          {% else %}
+          <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top" alt="{{ location.name }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ location.name }}</h5>
+            <p class="card-text">{{ location.description|truncatewords:10 }}</p>
+            <a href="{% url 'home:detail' 'location' location.id %}" class="btn btn-sm btn-outline-primary">Khám phá</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 mb-4">
+          <h5>Về Traveloka</h5>
+          <ul>
+            <li><a href="#">Giới thiệu</a></li>
+            <li><a href="#">Tuyển dụng</a></li>
+            <li><a href="#">Tin tức</a></li>
+            <li><a href="#">Chính sách bảo mật</a></li>
+            <li><a href="#">Điều khoản sử dụng</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 mb-4">
+          <h5>Sản phẩm</h5>
+          <ul>
+            <li><a href="{% url 'home:flight_search' %}">Vé máy bay</a></li>
+            <li><a href="{% url 'home:hotel_search' %}">Khách sạn</a></li>
+            <li><a href="{% url 'home:tour_search' %}">Tour du lịch</a></li>
+            <li><a href="{% url 'home:car_search' %}">Xe đưa đón</a></li>
+            <li><a href="{% url 'home:promotions' %}">Khuyến mãi</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 mb-4">
+          <h5>Đối tác</h5>
+          <ul>
+            <li><a href="#">Hãng hàng không</a></li>
+            <li><a href="#">Khách sạn</a></li>
+            <li><a href="#">Công ty du lịch</a></li>
+            <li><a href="#">Đối tác thanh toán</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 mb-4">
+          <h5>Liên hệ</h5>
+          <ul>
+            <li><a href="#"><i class="fas fa-phone me-2"></i>1900 1234</a></li>
+            <li><a href="#"><i class="fas fa-envelope me-2"></i>support@traveloka.com</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt me-2"></i>Hà Nội, Việt Nam</a></li>
+          </ul>
+          <div class="social-icons mt-3">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-12 text-center">
+          <p class="mb-0">&copy; 2023 Traveloka. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JS -->
+  <script>
+    // Sticky navbar
+    window.addEventListener('scroll', function() {
+      const navbar = document.getElementById('mainNav');
+      if (window.scrollY > 50) {
+        navbar.classList.add('navbar-sticky');
+      } else {
+        navbar.classList.remove('navbar-sticky');
+      }
+    });
+
+    // Countdown timer
+    document.addEventListener('DOMContentLoaded', function() {
+      const countdowns = document.querySelectorAll('.countdown');
+
+      countdowns.forEach(function(countdown) {
+        const endDate = new Date(countdown.dataset.end);
+        const daysLeft = countdown.querySelector('.days-left');
+
+        function updateCountdown() {
+          const now = new Date();
+          const diff = endDate - now;
+
+          if (diff <= 0) {
+            daysLeft.textContent = '0';
+            return;
+          }
+
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          daysLeft.textContent = days;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 86400000); // Update once per day
+      });
+    });
+  </script>
+</body>
 </html>
