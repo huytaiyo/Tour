@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import (
     Location, Hotel, FlightTicket, Booking, Tour, CarTransfer, 
-    Promotion, UserProfile, TourImage, HotelImage
+    Promotion, UserProfile, TourImage, HotelImage, Room, RoomImage
 )
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Min, Max, Avg
@@ -53,7 +53,7 @@ def search(request):
         )
 
 
-        
+
     elif item_type == 'flight':
         results = FlightTicket.objects.filter(
             Q(flight_number__icontains=query) | 
@@ -80,10 +80,12 @@ def search(request):
 def detail(request, item_type, item_id):
     item = None
     related_items = []
+    rooms = []
 
     if item_type == 'hotel':
         item = get_object_or_404(Hotel, id=item_id)
         related_items = Hotel.objects.filter(location=item.location).exclude(id=item_id)[:3]
+        rooms = Room.objects.filter(hotel=item, is_available=True).order_by('price')
     elif item_type == 'flight':
         item = get_object_or_404(FlightTicket, id=item_id)
         related_items = FlightTicket.objects.filter(
@@ -98,6 +100,12 @@ def detail(request, item_type, item_id):
     elif item_type == 'location':
         item = get_object_or_404(Location, id=item_id)
         related_items = Location.objects.filter(is_popular=True).exclude(id=item_id)[:3]
+    elif item_type == 'room':
+        room = get_object_or_404(Room, id=item_id)
+        item = room.hotel
+        item_type = 'hotel'  # Switch back to hotel type for template rendering
+        rooms = [room]  # Just show this specific room
+        related_items = Room.objects.filter(hotel=item, is_available=True).exclude(id=item_id)[:3]
 
     # Get applicable promotions
     promotions = Promotion.objects.filter(
@@ -111,6 +119,7 @@ def detail(request, item_type, item_id):
         'item_type': item_type,
         'related_items': related_items,
         'promotions': promotions,
+        'rooms': rooms,
     }
     return render(request, 'home/detail.html', context)
 
@@ -123,6 +132,7 @@ def booking(request, item_type, item_id):
         number_of_guests = int(request.POST.get('number_of_guests', 1))
         special_requests = request.POST.get('special_requests', '')
         promo_code = request.POST.get('promo_code', '')
+        room_id = request.POST.get('room_id')  # For hotel room bookings
 
         # Initialize booking with common fields
         booking_data = {
@@ -158,9 +168,19 @@ def booking(request, item_type, item_id):
                 check_in = datetime.strptime(check_in_date, '%Y-%m-%d').date()
                 check_out = datetime.strptime(check_out_date, '%Y-%m-%d').date()
                 nights = (check_out - check_in).days
-                booking_data['total_price'] = hotel.price * nights * number_of_guests
+
+                # If a specific room was selected
+                if room_id:
+                    room = get_object_or_404(Room, id=room_id, hotel=hotel)
+                    booking_data['total_price'] = room.price * nights * number_of_guests
+                else:
+                    booking_data['total_price'] = hotel.price * nights * number_of_guests
             else:
-                booking_data['total_price'] = hotel.price
+                if room_id:
+                    room = get_object_or_404(Room, id=room_id, hotel=hotel)
+                    booking_data['total_price'] = room.price
+                else:
+                    booking_data['total_price'] = hotel.price
 
         elif item_type == 'flight':
             flight = get_object_or_404(FlightTicket, id=item_id)
@@ -189,12 +209,20 @@ def booking(request, item_type, item_id):
         # Create booking
         booking = Booking.objects.create(**booking_data)
 
-        messages.success(request, 'Đặt chỗ thành công!')
-        return redirect('home:orders')
+        # Redirect to payment page
+        return redirect('home:payment', booking_id=booking.id)
     else:
         item = None
+        room = None
+
         if item_type == 'hotel':
             item = get_object_or_404(Hotel, id=item_id)
+            # Get available rooms for this hotel
+            rooms = Room.objects.filter(hotel=item, is_available=True).order_by('price')
+        elif item_type == 'room':
+            room = get_object_or_404(Room, id=item_id)
+            item = room.hotel
+            item_type = 'hotel'  # Switch back to hotel type for template rendering
         elif item_type == 'flight':
             item = get_object_or_404(FlightTicket, id=item_id)
         elif item_type == 'tour':
@@ -213,6 +241,8 @@ def booking(request, item_type, item_id):
         context = {
             'item': item,
             'item_type': item_type,
+            'room': room,
+            'rooms': rooms if item_type == 'hotel' and not room else None,
             'promotions': promotions,
             'today': timezone.now().date().isoformat(),
             'tomorrow': (timezone.now() + timedelta(days=1)).date().isoformat(),
@@ -547,3 +577,37 @@ def apply_promotion(request):
             })
 
     return JsonResponse({'success': False, 'message': 'Invalid request'})
+
+@login_required
+def payment(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+
+    if request.method == 'POST':
+        # Process payment (in a real app, this would integrate with a payment gateway)
+        payment_method = request.POST.get('payment_method')
+
+        # Update booking status
+        booking.status = 'confirmed'
+        booking.save()
+
+        messages.success(request, 'Thanh toán thành công! Đặt phòng của bạn đã được xác nhận.')
+        return redirect('home:orders')
+
+    context = {
+        'booking': booking,
+    }
+    return render(request, 'home/payment.html', context)
+
+def room_detail(request, room_id):
+    room = get_object_or_404(Room, id=room_id)
+    hotel = room.hotel
+
+    # Get other rooms from the same hotel
+    related_rooms = Room.objects.filter(hotel=hotel, is_available=True).exclude(id=room_id)[:3]
+
+    context = {
+        'room': room,
+        'hotel': hotel,
+        'related_rooms': related_rooms,
+    }
+    return render(request, 'home/room_detail.html', context)

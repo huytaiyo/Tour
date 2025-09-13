@@ -3,30 +3,633 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Đặt chỗ - Travel Website</title>
+    <title>Đặt phòng - Traveloka</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0064D2;
+            --secondary-color: #FF5722;
+            --accent-color: #00B0F0;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .booking-header {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .booking-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .booking-form {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .booking-summary {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .room-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .room-image {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .room-details {
+            padding: 20px;
+        }
+
+        .room-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .room-type {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .room-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .room-capacity {
+            margin-bottom: 10px;
+        }
+
+        .room-services {
+            margin-bottom: 15px;
+        }
+
+        .service-item {
+            display: inline-block;
+            background-color: var(--light-gray);
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .total-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .promo-code-input {
+            position: relative;
+        }
+
+        .promo-code-input .btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .room-selection {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .room-selection:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .room-selection.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 100, 210, 0.05);
+        }
+    </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'home:home' %}">Travel Website</a>
+    <a class="navbar-brand" href="{% url 'home:home' %}">
+      <i class="fas fa-plane-departure me-2"></i>Traveloka
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home:flight_search' %}">
+            <i class="fas fa-plane me-1"></i> Vé máy bay
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'home:hotel_search' %}">
+            <i class="fas fa-hotel me-1"></i> Khách sạn
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home:tour_search' %}">
+            <i class="fas fa-map-marked-alt me-1"></i> Tour
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home:car_search' %}">
+            <i class="fas fa-car me-1"></i> Xe đưa đón
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user-circle me-1"></i> {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" href="{% url 'home:profile' %}"><i class="fas fa-id-card me-2"></i>Hồ sơ</a></li>
+              <li><a class="dropdown-item" href="{% url 'home:orders' %}"><i class="fas fa-list-alt me-2"></i>Đơn hàng</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'home:logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:login' %}">
+              <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:register' %}">
+              <i class="fas fa-user-plus me-1"></i> Đăng ký
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
   </div>
 </nav>
 
 <div class="container mt-4">
   {% if item %}
-    <h2>Đặt chỗ cho {{ item.name if item_type == 'hotel' else item.flight_number }}</h2>
-    <form method="post">
-      {% csrf_token %}
-      <p>Bạn có chắc chắn muốn đặt chỗ này?</p>
-      <button type="submit" class="btn btn-success">Xác nhận đặt chỗ</button>
-      <a href="{% url 'home:detail' item_type=item_type item_id=item.id %}" class="btn btn-secondary">Hủy</a>
-    </form>
+    <div class="booking-header">
+      {% if item_type == 'hotel' %}
+        <h1 class="booking-title">Đặt phòng tại {{ item.name }}</h1>
+        <p class="text-muted">{{ item.location.name }}{% if item.address %} - {{ item.address }}{% endif %}</p>
+      {% elif item_type == 'room' %}
+        <h1 class="booking-title">Đặt phòng {{ room.name }}</h1>
+        <p class="text-muted">{{ room.hotel.name }} - {{ room.hotel.location.name }}</p>
+      {% elif item_type == 'flight' %}
+        <h1 class="booking-title">Đặt vé máy bay {{ item.flight_number }}</h1>
+        <p class="text-muted">{{ item.origin.name }} → {{ item.destination.name }}</p>
+      {% elif item_type == 'tour' %}
+        <h1 class="booking-title">Đặt tour {{ item.name }}</h1>
+        <p class="text-muted">{{ item.location.name }} - {{ item.duration }}</p>
+      {% elif item_type == 'car' %}
+        <h1 class="booking-title">Đặt xe {{ item.name }}</h1>
+        <p class="text-muted">{{ item.location.name }} - {{ item.get_car_type_display }}</p>
+      {% endif %}
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="booking-form">
+          <h3 class="mb-3">Thông tin đặt phòng</h3>
+          <form method="post">
+            {% csrf_token %}
+
+            {% if item_type == 'hotel' and rooms %}
+              <div class="mb-4">
+                <h4 class="mb-3">Chọn phòng</h4>
+                {% for room in rooms %}
+                  <div class="room-selection mb-3" data-room-id="{{ room.id }}">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <h5>{{ room.name }}</h5>
+                        <p class="mb-1">
+                          <span class="badge bg-info">{{ room.get_room_type_display }}</span>
+                          <span class="badge bg-secondary">{{ room.get_bed_type_display }}</span>
+                        </p>
+                        <p class="mb-1"><i class="fas fa-user me-1"></i> {{ room.capacity }} người</p>
+                        {% if room.size > 0 %}
+                          <p class="mb-1"><i class="fas fa-expand-arrows-alt me-1"></i> {{ room.size }} m²</p>
+                        {% endif %}
+                      </div>
+                      <div class="col-md-4 text-end">
+                        <div class="room-price">{{ room.price|floatformat:0 }} VND</div>
+                        <small class="text-muted">mỗi đêm</small>
+                      </div>
+                    </div>
+                    <input type="radio" name="room_id" value="{{ room.id }}" class="d-none room-radio">
+                  </div>
+                {% endfor %}
+              </div>
+            {% elif item_type == 'room' %}
+              <input type="hidden" name="room_id" value="{{ room.id }}">
+            {% endif %}
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="check_in_date" class="form-label">Ngày nhận phòng</label>
+                <input type="date" class="form-control" id="check_in_date" name="check_in_date" value="{{ today }}" required>
+              </div>
+              <div class="col-md-6">
+                <label for="check_out_date" class="form-label">Ngày trả phòng</label>
+                <input type="date" class="form-control" id="check_out_date" name="check_out_date" value="{{ tomorrow }}" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="number_of_guests" class="form-label">Số khách</label>
+              <select class="form-select" id="number_of_guests" name="number_of_guests">
+                {% for i in "123456"|make_list %}
+                  <option value="{{ i }}">{{ i }} khách</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="special_requests" class="form-label">Yêu cầu đặc biệt (tùy chọn)</label>
+              <textarea class="form-control" id="special_requests" name="special_requests" rows="3" placeholder="Ví dụ: phòng không hút thuốc, tầng cao, v.v."></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="promo_code" class="form-label">Mã khuyến mãi (nếu có)</label>
+              <div class="promo-code-input">
+                <input type="text" class="form-control" id="promo_code" name="promo_code" placeholder="Nhập mã khuyến mãi">
+                <button type="button" class="btn btn-outline-primary" id="apply_promo">Áp dụng</button>
+              </div>
+              <div id="promo_message" class="mt-2"></div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+              {% if item_type == 'hotel' %}
+                <a href="{% url 'home:detail' item_type=item_type item_id=item.id %}" class="btn btn-outline-secondary">
+                  <i class="fas fa-arrow-left me-1"></i>Quay lại
+                </a>
+              {% elif item_type == 'room' %}
+                <a href="{% url 'home:room_detail' room_id=room.id %}" class="btn btn-outline-secondary">
+                  <i class="fas fa-arrow-left me-1"></i>Quay lại
+                </a>
+              {% else %}
+                <a href="{% url 'home:detail' item_type=item_type item_id=item.id %}" class="btn btn-outline-secondary">
+                  <i class="fas fa-arrow-left me-1"></i>Quay lại
+                </a>
+              {% endif %}
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check me-1"></i>Tiếp tục đến thanh toán
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="booking-summary">
+          <h3 class="mb-3">Tóm tắt đặt phòng</h3>
+
+          {% if item_type == 'hotel' %}
+            <div class="d-flex align-items-center mb-3">
+              {% if item.images.first %}
+                <img src="{{ item.images.first.image.url }}" alt="{{ item.name }}" class="img-fluid rounded me-3" style="width: 80px; height: 80px; object-fit: cover;">
+              {% else %}
+                <div class="bg-light rounded me-3" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fas fa-hotel fa-2x text-secondary"></i>
+                </div>
+              {% endif %}
+              <div>
+                <h5 class="mb-1">{{ item.name }}</h5>
+                <p class="mb-0 text-muted">{{ item.location.name }}</p>
+              </div>
+            </div>
+          {% elif item_type == 'room' %}
+            <div class="d-flex align-items-center mb-3">
+              {% if room.images.first %}
+                <img src="{{ room.images.first.image.url }}" alt="{{ room.name }}" class="img-fluid rounded me-3" style="width: 80px; height: 80px; object-fit: cover;">
+              {% else %}
+                <div class="bg-light rounded me-3" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fas fa-bed fa-2x text-secondary"></i>
+                </div>
+              {% endif %}
+              <div>
+                <h5 class="mb-1">{{ room.name }}</h5>
+                <p class="mb-0 text-muted">{{ room.hotel.name }}</p>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="d-flex justify-content-between mb-2">
+            <span>Giá phòng:</span>
+            <span id="room_price">
+              {% if item_type == 'hotel' %}
+                {{ item.price|floatformat:0 }} VND
+              {% elif item_type == 'room' %}
+                {{ room.price|floatformat:0 }} VND
+              {% elif item_type == 'flight' %}
+                {{ item.price|floatformat:0 }} VND
+              {% elif item_type == 'tour' %}
+                {{ item.price|floatformat:0 }} VND
+              {% elif item_type == 'car' %}
+                {{ item.price|floatformat:0 }} VND
+              {% endif %}
+            </span>
+          </div>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span>Số đêm:</span>
+            <span id="nights">1 đêm</span>
+          </div>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span>Số khách:</span>
+            <span id="guests">1 khách</span>
+          </div>
+
+          <div id="discount_row" class="d-flex justify-content-between mb-2 text-success" style="display: none !important;">
+            <span>Giảm giá:</span>
+            <span id="discount">0 VND</span>
+          </div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="fw-bold">Tổng cộng:</span>
+            <span class="total-price" id="total_price">
+              {% if item_type == 'hotel' %}
+                {{ item.price|floatformat:0 }} VND
+              {% elif item_type == 'room' %}
+                {{ room.price|floatformat:0 }} VND
+              {% elif item_type == 'flight' %}
+                {{ item.price|floatformat:0 }} VND
+              {% elif item_type == 'tour' %}
+                {{ item.price|floatformat:0 }} VND
+              {% elif item_type == 'car' %}
+                {{ item.price|floatformat:0 }} VND
+              {% endif %}
+            </span>
+          </div>
+
+          <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle me-2"></i>Giá trên chưa bao gồm thuế và phí.
+          </div>
+        </div>
+
+        {% if promotions %}
+          <div class="card mt-3">
+            <div class="card-body">
+              <h5 class="card-title">Khuyến mãi hiện có</h5>
+              <ul class="list-unstyled">
+                {% for promotion in promotions %}
+                  <li class="mb-2">
+                    <div class="d-flex align-items-center">
+                      <div class="bg-light rounded p-2 me-2">
+                        <i class="fas fa-tag text-primary"></i>
+                      </div>
+                      <div>
+                        <strong>{{ promotion.promo_code }}</strong>: 
+                        {% if promotion.discount_percent > 0 %}
+                          Giảm {{ promotion.discount_percent }}%
+                        {% else %}
+                          Giảm {{ promotion.discount_amount|floatformat:0 }} VND
+                        {% endif %}
+                      </div>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
   {% else %}
-    <p>Không tìm thấy thông tin để đặt chỗ.</p>
+    <div class="alert alert-warning">
+      <i class="fas fa-exclamation-triangle me-2"></i>Không tìm thấy thông tin để đặt phòng.
+    </div>
   {% endif %}
 </div>
 
+<footer class="bg-dark text-white py-5 mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 mb-4">
+        <h5>Về Traveloka</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white-50">Giới thiệu</a></li>
+          <li><a href="#" class="text-white-50">Tuyển dụng</a></li>
+          <li><a href="#" class="text-white-50">Tin tức</a></li>
+          <li><a href="#" class="text-white-50">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 mb-4">
+        <h5>Sản phẩm</h5>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'home:flight_search' %}" class="text-white-50">Vé máy bay</a></li>
+          <li><a href="{% url 'home:hotel_search' %}" class="text-white-50">Khách sạn</a></li>
+          <li><a href="{% url 'home:tour_search' %}" class="text-white-50">Tour du lịch</a></li>
+          <li><a href="{% url 'home:car_search' %}" class="text-white-50">Xe đưa đón</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 mb-4">
+        <h5>Liên hệ</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white-50"><i class="fas fa-phone me-2"></i>1900 1234</a></li>
+          <li><a href="#" class="text-white-50"><i class="fas fa-envelope me-2"></i>support@traveloka.com</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 mb-4">
+        <h5>Theo dõi chúng tôi</h5>
+        <div class="mt-3">
+          <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+          <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+          <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+          <a href="#" class="text-white"><i class="fab fa-youtube fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12 text-center">
+        <p class="mb-0">&copy; 2023 Traveloka. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Room selection
+    const roomSelections = document.querySelectorAll('.room-selection');
+    roomSelections.forEach(room => {
+      room.addEventListener('click', function() {
+        // Remove selected class from all rooms
+        roomSelections.forEach(r => {
+          r.classList.remove('selected');
+        });
+
+        // Add selected class to clicked room
+        this.classList.add('selected');
+
+        // Check the radio button
+        const radio = this.querySelector('.room-radio');
+        if (radio) {
+          radio.checked = true;
+        }
+
+        // Update price in summary
+        const roomPrice = this.querySelector('.room-price').textContent.trim();
+        document.getElementById('room_price').textContent = roomPrice;
+        updateTotalPrice();
+      });
+    });
+
+    // Date change handlers
+    const checkInDate = document.getElementById('check_in_date');
+    const checkOutDate = document.getElementById('check_out_date');
+
+    function updateNights() {
+      if (checkInDate.value && checkOutDate.value) {
+        const checkIn = new Date(checkInDate.value);
+        const checkOut = new Date(checkOutDate.value);
+        const nights = Math.round((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+
+        if (nights > 0) {
+          document.getElementById('nights').textContent = nights + (nights === 1 ? ' đêm' : ' đêm');
+          updateTotalPrice();
+        } else {
+          checkOutDate.value = checkInDate.value;
+          document.getElementById('nights').textContent = '1 đêm';
+        }
+      }
+    }
+
+    checkInDate.addEventListener('change', function() {
+      // Ensure check-out date is not before check-in date
+      if (checkOutDate.value && new Date(checkOutDate.value) < new Date(checkInDate.value)) {
+        checkOutDate.value = checkInDate.value;
+      }
+      updateNights();
+    });
+
+    checkOutDate.addEventListener('change', updateNights);
+
+    // Number of guests change handler
+    const numberOfGuests = document.getElementById('number_of_guests');
+    numberOfGuests.addEventListener('change', function() {
+      document.getElementById('guests').textContent = this.value + ' khách';
+      updateTotalPrice();
+    });
+
+    // Apply promo code
+    const applyPromoBtn = document.getElementById('apply_promo');
+    const promoCodeInput = document.getElementById('promo_code');
+    const promoMessage = document.getElementById('promo_message');
+    const discountRow = document.getElementById('discount_row');
+    const discountAmount = document.getElementById('discount');
+
+    applyPromoBtn.addEventListener('click', function() {
+      const promoCode = promoCodeInput.value.trim();
+      if (!promoCode) {
+        promoMessage.innerHTML = '<div class="text-danger">Vui lòng nhập mã khuyến mãi</div>';
+        return;
+      }
+
+      // Simulate promo code validation (in a real app, this would be an AJAX call to the server)
+      setTimeout(function() {
+        // For demo purposes, let's assume "TRAVEL10" gives 10% off
+        if (promoCode.toUpperCase() === 'TRAVEL10') {
+          promoMessage.innerHTML = '<div class="text-success">Mã khuyến mãi hợp lệ: Giảm 10%</div>';
+          discountRow.style.display = 'flex';
+
+          // Calculate discount
+          const basePrice = calculateBasePrice();
+          const discount = basePrice * 0.1;
+          discountAmount.textContent = '-' + Math.round(discount).toLocaleString() + ' VND';
+
+          updateTotalPrice(discount);
+        } else {
+          promoMessage.innerHTML = '<div class="text-danger">Mã khuyến mãi không hợp lệ</div>';
+          discountRow.style.display = 'none';
+          updateTotalPrice();
+        }
+      }, 500);
+    });
+
+    // Helper functions
+    function calculateBasePrice() {
+      const roomPriceText = document.getElementById('room_price').textContent;
+      const roomPrice = parseInt(roomPriceText.replace(/[^\d]/g, ''));
+      const nights = parseInt(document.getElementById('nights').textContent);
+      const guests = parseInt(document.getElementById('number_of_guests').value);
+
+      return roomPrice * nights;
+    }
+
+    function updateTotalPrice(discount = 0) {
+      const basePrice = calculateBasePrice();
+      const totalPrice = basePrice - discount;
+
+      document.getElementById('total_price').textContent = Math.round(totalPrice).toLocaleString() + ' VND';
+    }
+
+    // Initialize
+    if (roomSelections.length > 0) {
+      roomSelections[0].click();
+    }
+    updateNights();
+  });
+</script>
 </body>
 </html>

@@ -9,6 +9,10 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('detail/<str:item_type>/<int:item_id>/', views.detail, name='detail'),
     path('booking/<str:item_type>/<int:item_id>/', views.booking, name='booking'),
+    path('payment/<int:booking_id>/', views.payment, name='payment'),
+
+    # Room specific pages
+    path('room/<int:room_id>/', views.room_detail, name='room_detail'),
 
     # User authentication and profile
     path('login/', views.user_login, name='login'),

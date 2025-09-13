@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     Location, Hotel, HotelImage, FlightTicket, Booking, Tour, TourImage,
-    CarTransfer, Promotion, UserProfile
+    CarTransfer, Promotion, UserProfile, Room, RoomImage
 )
 
 class ImagePreviewMixin:
@@ -16,6 +16,16 @@ class HotelImageInline(admin.TabularInline, ImagePreviewMixin):
     model = HotelImage
     extra = 1
     readonly_fields = ('image_preview',)
+
+class RoomImageInline(admin.TabularInline, ImagePreviewMixin):
+    model = RoomImage
+    extra = 1
+    readonly_fields = ('image_preview',)
+
+class RoomInline(admin.TabularInline):
+    model = Room
+    extra = 1
+    fields = ('name', 'room_type', 'bed_type', 'price', 'capacity', 'is_available')
 
 class TourImageInline(admin.TabularInline, ImagePreviewMixin):
     model = TourImage
@@ -40,7 +50,7 @@ class HotelAdmin(admin.ModelAdmin):
     list_display = ('name', 'location', 'stars', 'price', 'rating', 'is_featured')
     list_filter = ('location', 'stars', 'is_featured')
     search_fields = ('name', 'location__name', 'address')
-    inlines = [HotelImageInline]
+    inlines = [HotelImageInline, RoomInline]
     list_editable = ('is_featured',)
     fieldsets = (
         (None, {
@@ -150,6 +160,36 @@ class PromotionAdmin(admin.ModelAdmin):
     def get_remaining_days(self, obj):
         return obj.get_remaining_days()
     get_remaining_days.short_description = 'Remaining Days'
+
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
+    list_display = ('name', 'hotel', 'room_type', 'bed_type', 'price', 'capacity', 'is_available')
+    list_filter = ('hotel', 'room_type', 'bed_type', 'is_available', 'has_bathtub', 'has_refrigerator', 'has_air_conditioning', 'has_hot_water')
+    search_fields = ('name', 'hotel__name', 'description')
+    inlines = [RoomImageInline]
+    list_editable = ('is_available',)
+    fieldsets = (
+        (None, {
+            'fields': ('hotel', 'name', 'room_type', 'bed_type', 'description')
+        }),
+        ('Details', {
+            'fields': ('price', 'capacity', 'size', 'services', 'is_available')
+        }),
+        ('Basic Amenities', {
+            'fields': ('is_non_smoking', 'has_waiting_area'),
+            'classes': ('collapse',),
+        }),
+        ('Room Amenities', {
+            'fields': ('has_air_conditioning', 'has_mini_bar', 'has_free_bottled_water', 
+                      'has_refrigerator', 'has_tv', 'has_desk'),
+            'classes': ('collapse',),
+        }),
+        ('Bathroom Amenities', {
+            'fields': ('has_hot_water', 'has_private_bathroom', 'has_shower', 
+                      'has_toiletries', 'has_bathtub', 'has_hair_dryer', 'has_bathrobes'),
+            'classes': ('collapse',),
+        }),
+    )
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thanh toán - Traveloka</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0064D2;
+            --secondary-color: #FF5722;
+            --accent-color: #00B0F0;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        .payment-header {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .booking-details {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-methods {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-summary {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-method-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .payment-method-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 100, 210, 0.05);
+        }
+        
+        .payment-method-logo {
+            height: 40px;
+            object-fit: contain;
+        }
+        
+        .total-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .booking-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .booking-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .booking-item-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .booking-item-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home:home' %}">
+      <i class="fas fa-plane-departure me-2"></i>Traveloka
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home:flight_search' %}">
+            <i class="fas fa-plane me-1"></i> Vé máy bay
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'home:hotel_search' %}">
+            <i class="fas fa-hotel me-1"></i> Khách sạn
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home:tour_search' %}">
+            <i class="fas fa-map-marked-alt me-1"></i> Tour
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home:car_search' %}">
+            <i class="fas fa-car me-1"></i> Xe đưa đón
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user-circle me-1"></i> {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" href="{% url 'home:profile' %}"><i class="fas fa-id-card me-2"></i>Hồ sơ</a></li>
+              <li><a class="dropdown-item" href="{% url 'home:orders' %}"><i class="fas fa-list-alt me-2"></i>Đơn hàng</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'home:logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:login' %}">
+              <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home:register' %}">
+              <i class="fas fa-user-plus me-1"></i> Đăng ký
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <div class="payment-header">
+    <h1 class="payment-title">Thanh toán đặt phòng</h1>
+    <p class="text-muted">Vui lòng hoàn tất thanh toán để xác nhận đặt phòng của bạn.</p>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-8">
+      <div class="booking-details mb-4">
+        <h3 class="mb-3">Chi tiết đặt phòng</h3>
+        
+        {% if booking.booking_type == 'hotel' %}
+          <div class="booking-item">
+            <div class="booking-item-title">{{ booking.hotel.name }}</div>
+            <div class="booking-item-details">
+              <i class="fas fa-map-marker-alt me-1 text-secondary"></i>{{ booking.hotel.location.name }}
+              {% if booking.hotel.address %}
+                - {{ booking.hotel.address }}
+              {% endif %}
+            </div>
+          </div>
+        {% elif booking.booking_type == 'flight' %}
+          <div class="booking-item">
+            <div class="booking-item-title">{{ booking.flight.flight_number }} - {{ booking.flight.airline }}</div>
+            <div class="booking-item-details">
+              <i class="fas fa-plane-departure me-1 text-secondary"></i>{{ booking.flight.origin.name }} → {{ booking.flight.destination.name }}
+            </div>
+            <div class="booking-item-details">
+              <i class="fas fa-calendar-alt me-1 text-secondary"></i>{{ booking.flight.departure_time|date:"d/m/Y H:i" }} → {{ booking.flight.arrival_time|date:"d/m/Y H:i" }}
+            </div>
+          </div>
+        {% elif booking.booking_type == 'tour' %}
+          <div class="booking-item">
+            <div class="booking-item-title">{{ booking.tour.name }}</div>
+            <div class="booking-item-details">
+              <i class="fas fa-map-marker-alt me-1 text-secondary"></i>{{ booking.tour.location.name }}
+            </div>
+            <div class="booking-item-details">
+              <i class="fas fa-clock me-1 text-secondary"></i>{{ booking.tour.duration }}
+            </div>
+          </div>
+        {% elif booking.booking_type == 'car' %}
+          <div class="booking-item">
+            <div class="booking-item-title">{{ booking.car.name }} ({{ booking.car.get_car_type_display }})</div>
+            <div class="booking-item-details">
+              <i class="fas fa-map-marker-alt me-1 text-secondary"></i>{{ booking.car.location.name }}
+            </div>
+            <div class="booking-item-details">
+              <i class="fas fa-users me-1 text-secondary"></i>{{ booking.car.capacity }} người
+            </div>
+          </div>
+        {% endif %}
+        
+        <div class="booking-item">
+          <div class="booking-item-title">Thông tin đặt phòng</div>
+          <div class="booking-item-details">
+            <i class="fas fa-calendar-check me-1 text-secondary"></i>Nhận phòng: {{ booking.check_in_date|date:"d/m/Y" }}
+          </div>
+          <div class="booking-item-details">
+            <i class="fas fa-calendar-times me-1 text-secondary"></i>Trả phòng: {{ booking.check_out_date|date:"d/m/Y" }}
+          </div>
+          <div class="booking-item-details">
+            <i class="fas fa-users me-1 text-secondary"></i>{{ booking.number_of_guests }} khách
+          </div>
+        </div>
+        
+        {% if booking.special_requests %}
+        <div class="booking-item">
+          <div class="booking-item-title">Yêu cầu đặc biệt</div>
+          <div class="booking-item-details">{{ booking.special_requests }}</div>
+        </div>
+        {% endif %}
+      </div>
+      
+      <div class="payment-methods">
+        <h3 class="mb-3">Phương thức thanh toán</h3>
+        <form method="post">
+          {% csrf_token %}
+          <div class="payment-method-card selected">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="payment_method" id="creditCard" value="credit_card" checked>
+              <label class="form-check-label d-flex justify-content-between align-items-center" for="creditCard">
+                <span>Thẻ tín dụng / Ghi nợ</span>
+                <div>
+                  <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/credit_cards.png" alt="Credit Card" class="payment-method-logo">
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <div class="payment-method-card">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="payment_method" id="bankTransfer" value="bank_transfer">
+              <label class="form-check-label d-flex justify-content-between align-items-center" for="bankTransfer">
+                <span>Chuyển khoản ngân hàng</span>
+                <div>
+                  <img src="https://cdn-icons-png.flaticon.com/512/2168/2168742.png" alt="Bank Transfer" class="payment-method-logo">
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <div class="payment-method-card">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="payment_method" id="momo" value="momo">
+              <label class="form-check-label d-flex justify-content-between align-items-center" for="momo">
+                <span>Ví MoMo</span>
+                <div>
+                  <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo" class="payment-method-logo">
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <div class="payment-method-card">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="payment_method" id="zalopay" value="zalopay">
+              <label class="form-check-label d-flex justify-content-between align-items-center" for="zalopay">
+                <span>ZaloPay</span>
+                <div>
+                  <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png" alt="ZaloPay" class="payment-method-logo">
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">
+            <i class="fas fa-lock me-2"></i>Thanh toán an toàn
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="payment-summary">
+        <h3 class="mb-3">Tóm tắt thanh toán</h3>
+        
+        <div class="d-flex justify-content-between mb-2">
+          <span>Giá gốc:</span>
+          <span>{{ booking.total_price|floatformat:0 }} VND</span>
+        </div>
+        
+        {% if booking.promotion %}
+        <div class="d-flex justify-content-between mb-2 text-success">
+          <span>Giảm giá ({{ booking.promotion.promo_code }}):</span>
+          {% if booking.promotion.discount_percent > 0 %}
+            <span>-{{ booking.promotion.discount_percent }}%</span>
+          {% else %}
+            <span>-{{ booking.promotion.discount_amount|floatformat:0 }} VND</span>
+          {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="d-flex justify-content-between mb-2">
+          <span>Thuế và phí:</span>
+          <span>0 VND</span>
+        </div>
+        
+        <hr>
+        
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="fw-bold">Tổng cộng:</span>
+          <span class="total-price">{{ booking.total_price|floatformat:0 }} VND</span>
+        </div>
+        
+        <div class="alert alert-info mt-3">
+          <i class="fas fa-info-circle me-2"></i>Đặt phòng của bạn sẽ được xác nhận ngay sau khi thanh toán thành công.
+        </div>
+        
+        <div class="mt-3">
+          <h5>Chính sách hủy phòng</h5>
+          <p class="small text-muted">Miễn phí hủy phòng trước 24 giờ so với thời gian nhận phòng. Sau thời gian này, bạn sẽ bị tính phí một đêm.</p>
+        </div>
+      </div>
+      
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title">Cần hỗ trợ?</h5>
+          <p class="card-text">Liên hệ với chúng tôi nếu bạn cần giúp đỡ.</p>
+          <a href="#" class="btn btn-outline-primary w-100">
+            <i class="fas fa-headset me-2"></i>Liên hệ hỗ trợ
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-dark text-white py-5 mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 mb-4">
+        <h5>Về Traveloka</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white-50">Giới thiệu</a></li>
+          <li><a href="#" class="text-white-50">Tuyển dụng</a></li>
+          <li><a href="#" class="text-white-50">Tin tức</a></li>
+          <li><a href="#" class="text-white-50">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 mb-4">
+        <h5>Sản phẩm</h5>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'home:flight_search' %}" class="text-white-50">Vé máy bay</a></li>
+          <li><a href="{% url 'home:hotel_search' %}" class="text-white-50">Khách sạn</a></li>
+          <li><a href="{% url 'home:tour_search' %}" class="text-white-50">Tour du lịch</a></li>
+          <li><a href="{% url 'home:car_search' %}" class="text-white-50">Xe đưa đón</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 mb-4">
+        <h5>Liên hệ</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white-50"><i class="fas fa-phone me-2"></i>1900 1234</a></li>
+          <li><a href="#" class="text-white-50"><i class="fas fa-envelope me-2"></i>support@traveloka.com</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 mb-4">
+        <h5>Theo dõi chúng tôi</h5>
+        <div class="mt-3">
+          <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+          <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+          <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+          <a href="#" class="text-white"><i class="fab fa-youtube fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12 text-center">
+        <p class="mb-0">&copy; 2023 Traveloka. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Toggle selected payment method
+  document.querySelectorAll('.payment-method-card').forEach(card => {
+    card.addEventListener('click', function() {
+      // Remove selected class from all cards
+      document.querySelectorAll('.payment-method-card').forEach(c => {
+        c.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked card
+      this.classList.add('selected');
+      
+      // Check the radio button inside this card
+      const radio = this.querySelector('input[type="radio"]');
+      if (radio) {
+        radio.checked = true;
+      }
+    });
+  });
+</script>
+</body>
+</html>
