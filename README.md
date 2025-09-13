@@ -1,1 +1,11 @@
 Thuyet trinh
+- Giới thiệu bản thân: Tên, tuổi, sở thích
+- Giới thiệu về sản phẩm: Website du lịch, chức năng đặt phòng khách sạn
+- Giới thiệu tổng quan về trang web: Giới thiệu về giao diện, các chức năng có: xem khách sạn, tìm phòng, đặt phòng, xem chi tiết khách sạn, phòng, các tiện nghi, lọc các phòng theo tên, location, mức giá, chức năng thanh toán online, ...
+- Giới thiệu về công nghệ sử dụng trong dự án: sử dụng Django làm backend, lập trình logic, các chức năng với ngôn ngữ lập trình python, frontend sử dụng HTML, CSS, JS, Bootstrap để thiết kế giao diện tương tác với người dùng
+- Giới thiệu về code: Nói qua về cách thực hiện dự án, đầu tiên code phần model dưới dạng các class trong python, Django sẽ có hệ thống ORM biến các class thành các bảng trong cơ sở dữ liệu để lưu data trang web.
+- Sau khi có model, sẽ đến phần url, là các đường dẫn điều hướng trang web
+- Url sẽ gán với các views, tồn tại dưới dạng các hàm trong python để xử lý logic, thực hiện các chức năng của trang web
+- Views sẽ trả về giao diện cho người dùng, là các trang html trong templates
+- Trang admin để quản lý trang web, gồm thêm sửa xóa những cái mà trang web có
+- Demo thử thêm phòng khách sạn 
